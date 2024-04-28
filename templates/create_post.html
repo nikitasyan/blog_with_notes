@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <style type="text/css">
+        #reference_info {
+            color: red;
+        }
+    </style>
+
+</head>
+<body>
+
+<div class="create_block">
+    <input type="text" name="header" id="header" placeholder="Заголовок" />
+    <input type="text" name="text_message" id="text_message" placeholder="Текст поста" />
+    <button onclick="send()">Отправить</button>
+</div>
+
+<p id="reference_info"></p>
+<div id="message"></div>
+<div id="all_posts"></div>
+<form method="GET" action="/posts" >
+    <input type="submit" value="Все посты" />
+</form>
+<script>
+    async function send() {
+
+        const header = document.getElementById("header").value;
+        const text_message = document.getElementById("text_message").value;
+
+        const response = await fetch("/create_post", {
+                method: "POST",
+                headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    header: header,
+                    text_message: text_message
+                })
+            });
+            if (response.ok) {
+                const data = await response.json();
+                document.getElementById("message").textContent = data.message;
+                document.getElementById("all_posts").textContent = data.all_posts;
+                document.getElementById("reference_info").textContent = data.reference_info;
+                document.querySelector(".create_block").style.display = "none";
+            }
+            else
+                console.log(response);
+    }
+</script>
+
+</body>
+</html>

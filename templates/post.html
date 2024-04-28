@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+</head>
+<body>
+
+<h4 id="current_header">{{ head }}</h4>
+<p>Текст поста: {{ text_message }}</p>
+<p>Дата и время последнего обновления: {{ last_update }}</p>
+<p>Имя создателя поста: {{ author_this_post }}</p>
+
+{% if post_belongs_to_username %}
+    <p>Это Вы! Поэтому Вы можете редактировать эту заметку</p>
+    <div class="update_block">
+        <input type="text" class="new_header" placeholder="Введите новый заголовок">
+        <input type="text" class="new_text_message" placeholder="Введите новый текст поста">
+        <input type="button" onclick="send()" value="Отредактировать" />
+    </div>
+    <script>
+        async function send() {
+            const old_header = document.getElementById("current_header").textContent;
+            const new_header = document.querySelector(".new_header").value;
+            const new_text_message = document.querySelector(".new_text_message").value;
+            const response = await fetch("/edit_post", {
+                    method: "PUT",
+                    headers: { "Accept": "application/json", "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        old_header: old_header,
+                        new_header: new_header,
+                        new_text_message: new_text_message
+                    })
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    document.getElementById("message").textContent = data.message;
+                    document.getElementById("all_posts").textContent = data.all_posts;
+                    document.getElementById("reference_info").textContent = data.reference_info;
+                    document.getElementById("link").style.visibility = "visible";
+                    document.querySelector(".update_block").style.display = "none";
+                }
+                else
+                    console.log(response);
+        }
+    </script>
+{% else %}
+    <p>Это НЕ Вы! Поэтому у Вас нет права редактировать данную запись.</p>
+    <p>Вы можете только читать этот пост или <a href="/posts">любой</a> другой</p>
+{% endif %}
+
+<p id="reference_info"></p>
+<div id="message"></div>
+<div id="all_posts"></div>
+<p id="link" style="visibility: hidden">Список всех записей доступен по <a href="/posts">ссылке</a>.</p>
+
+</body>
+</html>

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form action="/post" method="GET">
+    <p>Можете ввести номер поста, которые хотите посмотреть или изменить.</p>
+    <p>Но только тот, который есть в приведённом перечне, иначе -- не получится!</p>
+    <input type="number" name="post_id" placeholder="Введите номер поста, который желаете изменить">
+    <input type="submit" value="Выбрать">
+</form>
+
+<p>Или <a href="/create_post">создать</a> новый пост</p>
+<div>
+   {% for post in posts %}
+        <br>
+        <p>{{ post.id }}. {{ post.head }}</p>
+  {% endfor %}
+</div>
+
+</body>
+</html>
