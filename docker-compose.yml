@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15
+    container_name: db_app
+    ports:
+      - ${DB_PORT}:5432
+    environment:
+      - POSTGRES_DB=blog
+      - POSTGRES_USER=www
+      - POSTGRES_PASSWORD=wwwpas
+    restart: always
+
+
+  app:
+    build: .
+    container_name: fastapi_app
+    env_file:
+      - .env
+    ports:
+      - '8001:8000'
+    depends_on:
+      - db
+    restart: no
